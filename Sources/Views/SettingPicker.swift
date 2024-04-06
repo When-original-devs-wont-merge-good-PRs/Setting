@@ -22,6 +22,7 @@ public struct SettingPicker: View, Setting {
     public var verticalPadding = CGFloat(14)
     public var horizontalPadding: CGFloat?
     public var choicesConfiguration = ChoicesConfiguration()
+    public var iconArray: [SettingIcon]? // Add property for array of icons
 
     public init(
         id: AnyHashable? = nil,
@@ -33,8 +34,11 @@ public struct SettingPicker: View, Setting {
         horizontalSpacing: CGFloat = CGFloat(12),
         verticalPadding: CGFloat = CGFloat(14),
         horizontalPadding: CGFloat? = nil,
-        choicesConfiguration: ChoicesConfiguration = ChoicesConfiguration()
+        choicesConfiguration: ChoicesConfiguration = ChoicesConfiguration(),
+        iconArray: [SettingIcon]? = nil // Add parameter for array of icons
     ) {
+   
+  
         self.id = id
         self.icon = icon
         self.title = title
@@ -45,6 +49,7 @@ public struct SettingPicker: View, Setting {
         self.verticalPadding = verticalPadding
         self.horizontalPadding = horizontalPadding
         self.choicesConfiguration = choicesConfiguration
+        self.iconArray = iconArray // Assign array of icons
     }
 
     public enum PickerDisplayMode {
@@ -138,13 +143,15 @@ struct SettingPickerView: View {
 
     var body: some View {
         switch choicesConfiguration.pickerDisplayMode {
-        case .navigation:
+         case .navigation:
             Button {
                 isActive = true
             } label: {
                 HStack(spacing: horizontalSpacing) {
-                    if let icon {
-                        SettingIconView(icon: icon)
+                    if let iconArray = iconArray {
+                        ForEach(iconArray) { icon in // Loop through array of icons
+                            SettingIconView(icon: icon)
+                        }
                     }
 
                     Text(title)
@@ -179,6 +186,7 @@ struct SettingPickerView: View {
                 }
                 .opacity(0)
             }
+            
 
         case .menu:
             HStack(spacing: horizontalSpacing) {
