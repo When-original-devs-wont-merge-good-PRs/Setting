@@ -8,16 +8,14 @@
 
 import SwiftUI
 
-/**
- A simple toggle.
- */
 public struct SettingToggle: View, Setting {
     public var id: AnyHashable?
     public var title: String
     @Binding public var isOn: Bool
     public var horizontalSpacing = CGFloat(12)
     public var verticalPadding = CGFloat(14)
-    public var horizontalPadding: CGFloat? = nil
+    public var horizontalPadding = CGFloat(16)
+    public var onChange: ((Bool) -> Void)? // Add onChange closure
 
     public init(
         id: AnyHashable? = nil,
@@ -25,7 +23,8 @@ public struct SettingToggle: View, Setting {
         isOn: Binding<Bool>,
         horizontalSpacing: CGFloat = CGFloat(12),
         verticalPadding: CGFloat = CGFloat(14),
-        horizontalPadding: CGFloat? = nil
+        horizontalPadding: CGFloat = CGFloat(16),
+        onChange: ((Bool) -> Void)? = nil // Initialize onChange closure
     ) {
         self.id = id
         self.title = title
@@ -33,6 +32,7 @@ public struct SettingToggle: View, Setting {
         self.horizontalSpacing = horizontalSpacing
         self.verticalPadding = verticalPadding
         self.horizontalPadding = horizontalPadding
+        self.onChange = onChange // Assign onChange closure
     }
 
     public var body: some View {
@@ -41,20 +41,20 @@ public struct SettingToggle: View, Setting {
             isOn: $isOn,
             horizontalSpacing: horizontalSpacing,
             verticalPadding: verticalPadding,
-            horizontalPadding: horizontalPadding
+            horizontalPadding: horizontalPadding,
+            onChange: onChange // Pass onChange closure to SettingToggleView
         )
     }
 }
 
 struct SettingToggleView: View {
-    @Environment(\.edgePadding) var edgePadding
-    
     let title: String
     @Binding var isOn: Bool
 
     var horizontalSpacing = CGFloat(12)
     var verticalPadding = CGFloat(14)
-    var horizontalPadding: CGFloat? = nil
+    var horizontalPadding = CGFloat(16)
+    var onChange: ((Bool) -> Void)? // Receive onChange closure
 
     var body: some View {
         HStack(spacing: horizontalSpacing) {
@@ -65,8 +65,11 @@ struct SettingToggleView: View {
 
             Toggle("", isOn: $isOn)
                 .labelsHidden()
+                .onChange(of: isOn, perform: { newValue in
+                    onChange?(newValue) // Call onChange closure
+                })
         }
-        .padding(.horizontal, horizontalPadding ?? edgePadding)
+        .padding(.horizontal, horizontalPadding)
         .accessibilityElement(children: .combine)
     }
 }
