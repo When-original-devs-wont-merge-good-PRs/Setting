@@ -210,21 +210,33 @@ public struct SettingPagePreviewView: View {
             
             #if os(iOS)
             if UIImage(systemName: indicator) != nil {
+                // iOS: Render system image
                 Image(systemName: indicator)
                     .foregroundColor(settingSecondaryColor)
+            } else if let uiImage = UIImage(named: indicator) {
+                // iOS: Render custom image from assets
+                Image(uiImage: uiImage)
+                    .foregroundColor(settingSecondaryColor)
             } else {
-                Image(indicator)
+                // iOS: Fallback to render indicator text
+                Text(indicator)
                     .foregroundColor(settingSecondaryColor)
             }
             #endif
             
             #if os(macOS)
-            if NSImage(systemSymbolName: indicator, accessibilityDescription: "") != nil {
-                Image(systemName: indicator)
+            if let nsImage = NSImage(systemSymbolName: indicator, accessibilityDescription: nil) {
+                // macOS: Render system image
+                Image(nsImage: nsImage)
+                    .foregroundColor(settingSecondaryColor)
+            } else if let nsImage = NSImage(named: indicator) {
+                // macOS: Render custom image from assets
+                Image(nsImage: nsImage)
                     .foregroundColor(settingSecondaryColor)
             } else {
-                Image(indicator)
-                    .foregroundColor(settingSecondaryColor)
+                // macOS: Fallback to render indicator text
+                Text(indicator)
+                    .foregroundColor(.blue)
             }
             #endif
         }
