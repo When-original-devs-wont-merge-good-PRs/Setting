@@ -13,6 +13,7 @@ import SwiftUI
  */
 public struct SettingText: View, Setting {
     public var id: AnyHashable?
+    public var icon: SettingIcon?
     public var title: String
     public var foregroundColor: Color?
     public var horizontalSpacing = CGFloat(12)
@@ -21,6 +22,7 @@ public struct SettingText: View, Setting {
 
     public init(
         id: AnyHashable? = nil,
+        icon: SettingIcon? = nil,
         title: String,
         foregroundColor: Color? = nil,
         horizontalSpacing: CGFloat = CGFloat(12),
@@ -28,6 +30,7 @@ public struct SettingText: View, Setting {
         horizontalPadding: CGFloat? = nil
     ) {
         self.id = id
+        self.icon = icon
         self.title = title
         self.foregroundColor = foregroundColor
         self.horizontalSpacing = horizontalSpacing
@@ -37,6 +40,7 @@ public struct SettingText: View, Setting {
 
     public var body: some View {
         SettingTextView(
+            icon: icon,
             title: title,
             foregroundColor: foregroundColor,
             horizontalSpacing: horizontalSpacing,
@@ -50,6 +54,7 @@ struct SettingTextView: View {
     @Environment(\.edgePadding) var edgePadding
     @Environment(\.settingPrimaryColor) var settingPrimaryColor
 
+    var icon: SettingIcon?
     let title: String
     var foregroundColor: Color?
     var horizontalSpacing = CGFloat(12)
@@ -57,11 +62,17 @@ struct SettingTextView: View {
     var horizontalPadding: CGFloat? = nil
 
     var body: some View {
-        Text(title)
-            .foregroundColor(foregroundColor ?? settingPrimaryColor)
-            .fixedSize(horizontal: false, vertical: true)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.vertical, verticalPadding)
-            .padding(.horizontal, horizontalPadding ?? edgePadding)
+        HStack(spacing: horizontalSpacing) {
+            if let icon {
+                SettingIconView(icon: icon)
+            }
+
+            Text(title)
+                .foregroundColor(foregroundColor ?? settingPrimaryColor)
+                .fixedSize(horizontal: false, vertical: true)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.vertical, verticalPadding)
+        }
+        .padding(.horizontal, horizontalPadding ?? edgePadding)
     }
 }

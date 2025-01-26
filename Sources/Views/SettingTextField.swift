@@ -13,6 +13,7 @@ import SwiftUI
  */
 public struct SettingTextField: View, Setting {
     public var id: AnyHashable?
+    public var icon: SettingIcon?
     public var placeholder: String
     @Binding public var text: String
     public var verticalPadding = CGFloat(14)
@@ -20,12 +21,14 @@ public struct SettingTextField: View, Setting {
 
     public init(
         id: AnyHashable? = nil,
+        icon: SettingIcon? = nil,
         placeholder: String,
         text: Binding<String>,
         verticalPadding: CGFloat = CGFloat(14),
         horizontalPadding: CGFloat? = nil
     ) {
         self.id = id
+        self.icon = icon
         self.placeholder = placeholder
         self._text = text
         self.verticalPadding = verticalPadding
@@ -34,6 +37,7 @@ public struct SettingTextField: View, Setting {
 
     public var body: some View {
         SettingTextFieldView(
+            icon: icon,
             placeholder: placeholder,
             text: $text,
             verticalPadding: verticalPadding,
@@ -44,7 +48,8 @@ public struct SettingTextField: View, Setting {
 
 struct SettingTextFieldView: View {
     @Environment(\.edgePadding) var edgePadding
-    
+
+    var icon: SettingIcon?
     let placeholder: String
     @Binding var text: String
 
@@ -52,10 +57,16 @@ struct SettingTextFieldView: View {
     var horizontalPadding: CGFloat? = nil
 
     var body: some View {
-        TextField(placeholder, text: $text)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.vertical, verticalPadding)
-            .padding(.horizontal, horizontalPadding ?? edgePadding)
-            .accessibilityElement(children: .combine)
+        HStack {
+            if let icon {
+                SettingIconView(icon: icon)
+            }
+
+            TextField(placeholder, text: $text)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.vertical, verticalPadding)
+                .accessibilityElement(children: .combine)
+        }
+        .padding(.horizontal, horizontalPadding ?? edgePadding)
     }
 }
