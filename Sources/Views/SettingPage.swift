@@ -112,7 +112,7 @@ struct SettingPageView<Content>: View where Content: View {
     @ViewBuilder var content: Content
     
     var body: some View {
-#if os(iOS)
+        #if os(iOS)
         let navigationBarTitleDisplayMode: NavigationBarItem.TitleDisplayMode = {
             switch navigationTitleDisplayMode {
             case .automatic:
@@ -130,22 +130,22 @@ struct SettingPageView<Content>: View where Content: View {
         
         main
             .navigationBarTitleDisplayMode(navigationBarTitleDisplayMode)
-#else
+        #else
         main
-#endif
+        #endif
     }
     
     @ViewBuilder var main: some View {
-#if os(visionOS)
+        #if os(visionOS)
         mainSettings
-#else
+        #else
         if #available(iOS 16.0, macOS 13.0, *) {
             mainSettings
                 .scrollDismissesKeyboard(.interactively)
         } else {
             mainSettings
         }
-#endif
+        #endif
     }
     
     var mainSettings: some View {
@@ -208,8 +208,25 @@ public struct SettingPagePreviewView: View {
                     .foregroundColor(settingSecondaryColor)
             }
             
-            Image(systemName: indicator)
-                .foregroundColor(settingSecondaryColor)
+            #if os(iOS)
+            if UIImage(systemName: indicator) != nil {
+                Image(systemName: indicator)
+                    .foregroundColor(settingSecondaryColor)
+            } else {
+                Image(indicator)
+                    .foregroundColor(settingSecondaryColor)
+            }
+            #endif
+            
+            #if os(macOS)
+            if NSImage(systemSymbolName: indicator, accessibilityDescription: "") != nil {
+                Image(systemName: indicator)
+                    .foregroundColor(settingSecondaryColor)
+            } else {
+                Image(indicator)
+                    .foregroundColor(settingSecondaryColor)
+            }
+            #endif
         }
         .padding(.horizontal, horizontalPadding ?? edgePadding)
         .accessibilityElement(children: .combine)
