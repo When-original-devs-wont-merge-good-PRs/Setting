@@ -182,6 +182,10 @@ struct SettingPickerView: View {
 
         case .menu:
             HStack(spacing: horizontalSpacing) {
+                if let icon {
+                    SettingIconView(icon: icon)
+                }
+
                 Text(title)
                     .fixedSize(horizontal: false, vertical: true)
                     .frame(maxWidth: .infinity, alignment: .leading)
