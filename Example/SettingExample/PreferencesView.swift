@@ -19,6 +19,7 @@ class PreferencesViewModel: ObservableObject {
     @AppStorage("notificationIndex") var notificationIndex = 0
     @AppStorage("notificationPromo") var notificationPromo = true
     @AppStorage("notificationUpdates") var notificationUpdates = true
+    @AppStorage("toggleIcon") var toggleUpdate = true
     @AppStorage("color") var color = 0xFF3100
     @AppStorage("text") var text = ""
     @Published var showingAlert = false
@@ -239,6 +240,17 @@ struct PreferencesView: View {
                             }
                             .icon(icon: .system(icon: "sparkles", backgroundColor: Color.pink))
                             .indicator("face.smiling")
+                        }
+
+                        SettingGroup {
+                            SettingToggle(
+                                icon: .system(icon: "globe", backgroundColor: Color.pink),
+                                title: "Toggle with Icon",
+                                isOn: $model.toggleUpdate,
+                                onChange: { _ in
+                                    print("Toggle is switched: \($model.toggleUpdate)")
+                                }
+                            )
                         }
                     }
                     .previewIcon(icon: .system(icon: "ellipsis", backgroundColor: Color.teal))
